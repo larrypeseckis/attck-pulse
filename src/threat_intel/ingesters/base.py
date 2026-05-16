@@ -8,14 +8,14 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Iterator
+from typing import Any
 
 import httpx
 from sqlalchemy import text
-from sqlalchemy.orm import Session
-from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from threat_intel.config import settings
 from threat_intel.db import PipelineRun, session_scope, upsert_source
@@ -24,7 +24,6 @@ from threat_intel.extractors.regex_extractor import (
     load_valid_technique_ids,
 )
 from threat_intel.logging_setup import get_logger
-
 
 logger = get_logger(__name__)
 
@@ -72,7 +71,7 @@ class BaseIngester(ABC):
 
     # Lifecycle
 
-    def __enter__(self) -> "BaseIngester":
+    def __enter__(self) -> BaseIngester:
         self._client = httpx.Client(
             headers={"User-Agent": settings.http_user_agent},
             timeout=settings.http_timeout_seconds,

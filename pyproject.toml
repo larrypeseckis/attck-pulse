@@ -1,5 +1,5 @@
 [project]
-name = "threat-intel-attack-trends"
+name = "attck-pulse"
 version = "0.1.0"
 description = "Pipeline for extracting MITRE ATT&CK technique mentions from public threat intel reports"
 readme = "README.md"

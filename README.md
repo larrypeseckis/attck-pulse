@@ -1,4 +1,4 @@
-# threat-intel-attack-trends
+# attck-pulse
 
 A pipeline that ingests public threat intelligence reports, extracts MITRE ATT&CK technique references, and produces queryable trend analysis.
 
@@ -29,8 +29,8 @@ Requires Python 3.12+ and PostgreSQL 16+.
 
 ```bash
 # 1. Clone and enter
-git clone <your-fork-url> threat-intel-attack-trends
-cd threat-intel-attack-trends
+git clone <your-fork-url> attck-pulse
+cd attck-pulse
 
 # 2. Set up environment (using uv; conda works too)
 uv venv

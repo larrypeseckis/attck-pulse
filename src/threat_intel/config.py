@@ -7,9 +7,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import Field, PostgresDsn, computed_field
+from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 

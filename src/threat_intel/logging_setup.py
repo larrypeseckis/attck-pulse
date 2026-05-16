@@ -11,7 +11,6 @@ from logging.handlers import RotatingFileHandler
 
 from threat_intel.config import settings
 
-
 _CONFIGURED = False
 
 
