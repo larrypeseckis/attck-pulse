@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+.conda/
+
+# uv
+.uv-cache/
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project artifacts
+*.log
+logs/
+data/raw/
+data/processed/
+data/attack/
+*.sqlite
+*.db
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/*.ipynb
+!notebooks/.gitkeep
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Secrets - belt and suspenders
+*.key
+*.pem
+credentials.*
+*.token
+.git_token
+.private/
+
+# AI tooling (local)
+.claude/

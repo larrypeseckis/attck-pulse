@@ -1,0 +1,27 @@
+# Source definitions for ingesters.
+# Each ingester reads its own block.
+
+sources:
+  cisa_kev:
+    name: "CISA Known Exploited Vulnerabilities"
+    base_url: "https://www.cisa.gov"
+    feed_url: "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+    feed_type: "json"
+
+  cisa_advisories:
+    name: "CISA Cybersecurity Advisories"
+    base_url: "https://www.cisa.gov"
+    feed_url: "https://www.cisa.gov/cybersecurity-advisories/all.xml"
+    feed_type: "rss"
+
+  microsoft_security_blog:
+    name: "Microsoft Security Blog"
+    base_url: "https://www.microsoft.com/en-us/security/blog"
+    feed_url: "https://www.microsoft.com/en-us/security/blog/feed/"
+    feed_type: "rss"
+
+  dfir_report:
+    name: "The DFIR Report"
+    base_url: "https://thedfirreport.com"
+    feed_url: "https://thedfirreport.com/feed/"
+    feed_type: "rss"
