@@ -5,12 +5,11 @@ Pure-function tests against the static method. No HTTP, no DB.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
 from threat_intel.ingesters.cisa_kev import CisaKevIngester
-
 
 SAMPLE_VULN = {
     "cveID": "CVE-2024-12345",
@@ -51,7 +50,7 @@ class TestKevNormalize:
 
     def test_published_at_parsed(self):
         report = CisaKevIngester._normalize_vulnerability(SAMPLE_VULN, "2024.08.15")
-        assert report.published_at == datetime(2024, 8, 15, tzinfo=timezone.utc)
+        assert report.published_at == datetime(2024, 8, 15, tzinfo=UTC)
 
     def test_metadata_preserves_kev_fields(self):
         report = CisaKevIngester._normalize_vulnerability(SAMPLE_VULN, "2024.08.15")

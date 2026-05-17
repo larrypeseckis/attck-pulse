@@ -14,7 +14,6 @@ from sqlalchemy.orm import Session
 
 from threat_intel.logging_setup import get_logger
 
-
 logger = get_logger(__name__)
 
 

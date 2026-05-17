@@ -5,9 +5,10 @@ SQLAlchemy Core (not ORM). Queries are visible SQL.
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
-from datetime import datetime, timezone
-from typing import Any, Generator
+from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -15,7 +16,6 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from threat_intel.config import settings
 from threat_intel.logging_setup import get_logger
-
 
 logger = get_logger(__name__)
 
@@ -121,7 +121,7 @@ class PipelineRun:
         self.metadata: dict[str, Any] = {}
         self._run_id: int | None = None
 
-    def __enter__(self) -> "PipelineRun":
+    def __enter__(self) -> PipelineRun:
         with session_scope() as session:
             result = session.execute(
                 text(
@@ -161,7 +161,7 @@ class PipelineRun:
                     """
                 ),
                 {
-                    "finished": datetime.now(tz=timezone.utc),
+                    "finished": datetime.now(tz=UTC),
                     "status": status,
                     "seen": self.records_seen,
                     "new": self.records_new,

@@ -9,7 +9,6 @@ from threat_intel.extractors.regex_extractor import (
     extract_attack_ids,
 )
 
-
 VALID_IDS = {"T1059", "T1059.001", "T1078", "T1486", "T1190"}
 
 

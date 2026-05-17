@@ -83,7 +83,7 @@ def main() -> int:
     parser.add_argument("--n", type=int, default=50, help="Sample size")
     parser.add_argument(
         "--method",
-        choices=["regex", "spacy_phrase", "manual"],
+        choices=["regex", "spacy_phrase", "manual", "cisa_attack_table"],
         required=True,
         help="Extraction method to validate",
     )

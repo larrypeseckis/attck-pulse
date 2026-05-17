@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>#StopRansomware: Play Ransomware | CISA</title>
+</head>
+<body>
+<header>
+    <nav><a href="/">Home</a> <a href="/news-events">News</a></nav>
+</header>
+<main>
+<article>
+    <h1>#StopRansomware: Play Ransomware</h1>
+    <div class="field--name-body">
+        <p><strong>Note:</strong> This joint Cybersecurity Advisory is part of an ongoing #StopRansomware effort. Originally published December 18, 2023.</p>
+
+        <p>The Federal Bureau of Investigation (FBI), Cybersecurity and Infrastructure Security Agency (CISA), and Australian Signals Directorate's Australian Cyber Security Centre (ASD's ACSC) are releasing this joint Cybersecurity Advisory (CSA) to disseminate known Play ransomware IOCs and TTPs.</p>
+
+        <h2>Technical Details</h2>
+        <p>Play ransomware actors employ a double-extortion model, encrypting systems after exfiltrating data. Ransom notes do not include an initial ransom demand or payment instructions.</p>
+
+        <p>The actors gain initial access via valid accounts (<a href="https://attack.mitre.org/techniques/T1078/">T1078</a>) and exploitation of public-facing applications.</p>
+
+        <h3>Table 3: Play Ransomware Actors ATT&amp;CK Techniques for Enterprise - Reconnaissance</h3>
+        <table>
+            <thead>
+                <tr><th>Technique Title</th><th>ID</th><th>Use</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Active Scanning</td>
+                    <td><a href="https://attack.mitre.org/techniques/T1595/">T1595</a></td>
+                    <td>Play actors scan victim networks for vulnerabilities prior to compromise.</td>
+                </tr>
+                <tr>
+                    <td>Gather Victim Network Information</td>
+                    <td>T1590</td>
+                    <td>Play actors collect network topology information.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Table 4: ATT&amp;CK Techniques for Enterprise - Initial Access</h3>
+        <table>
+            <thead>
+                <tr><th>Technique Title</th><th>ID</th><th>Use</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Exploit Public-Facing Application</td>
+                    <td>T1190</td>
+                    <td>Play actors exploit known vulnerabilities in FortiOS and Microsoft Exchange.</td>
+                </tr>
+                <tr>
+                    <td>External Remote Services</td>
+                    <td><a href="https://attack.mitre.org/techniques/T1133/">T1133</a></td>
+                    <td>Play actors leverage compromised VPN credentials for initial access.</td>
+                </tr>
+                <tr>
+                    <td>Valid Accounts</td>
+                    <td>T1078</td>
+                    <td>Domain accounts used for initial access and lateral movement.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Table 5: ATT&amp;CK Techniques for Enterprise - Execution</h3>
+        <table>
+            <thead>
+                <tr><th>Technique Title</th><th>ID</th><th>Use</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Command and Scripting Interpreter: PowerShell</td>
+                    <td>T1059.001</td>
+                    <td>Play actors execute PowerShell scripts for discovery.</td>
+                </tr>
+                <tr>
+                    <td>Command and Scripting Interpreter: Windows Command Shell</td>
+                    <td>T1059.003</td>
+                    <td>Play actors use cmd.exe for command execution.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Table 11: ATT&amp;CK Techniques for Enterprise - Impact</h3>
+        <table>
+            <thead>
+                <tr><th>Technique Title</th><th>ID</th><th>Use</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Data Encrypted for Impact</td>
+                    <td>T1486</td>
+                    <td>Play ransomware encrypts files using AES-RSA hybrid encryption.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Mitigations</h2>
+        <p>FBI, CISA, and ASD's ACSC recommend testing your existing security controls inventory to assess how they perform against the ATT&amp;CK techniques described in this advisory.</p>
+    </div>
+</article>
+</main>
+<footer>
+    <p>© CISA</p>
+</footer>
+</body>
+</html>
