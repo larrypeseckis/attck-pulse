@@ -11,7 +11,9 @@ sources:
   cisa_advisories:
     name: "CISA Cybersecurity Advisories"
     base_url: "https://www.cisa.gov"
-    feed_url: "https://www.cisa.gov/cybersecurity-advisories/all.xml"
+    # AA-numbered Joint Cybersecurity Advisories feed. NOT all.xml — that feed
+    # is dominated by ICS advisories and pushes AA entries out of its window.
+    feed_url: "https://www.cisa.gov/cybersecurity-advisories/cybersecurity-advisories.xml"
     feed_type: "rss"
 
   microsoft_security_blog:
