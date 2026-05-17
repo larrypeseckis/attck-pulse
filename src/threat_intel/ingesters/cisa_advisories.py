@@ -157,8 +157,11 @@ class CisaAdvisoriesIngester(BaseIngester):
         """Parse a single advisory page and produce a NormalizedReport."""
         soup = BeautifulSoup(html, "lxml")
 
+        # Extract the ATT&CK technique tables first, from the intact soup —
+        # _extract_body_text then decomposes those tables, so the prose handed
+        # to the regex extractor is independent of this table pass.
+        attack_mentions = self._extract_attack_table_mentions(soup)
         body_text = self._extract_body_text(soup) or rss_summary
-        attack_mentions = self._extract_attack_table_mentions(soup, body_text)
 
         advisory_id = self._extract_advisory_id(url)
         published_at = self._parse_date(rss_published)
@@ -204,10 +207,16 @@ class CisaAdvisoriesIngester(BaseIngester):
         return None
 
     def _extract_body_text(self, soup: BeautifulSoup) -> str:
-        """Extract main article text, skipping nav/footer/sidebars.
+        """Extract main article prose, skipping nav/footer/sidebars and the
+        ATT&CK technique tables.
 
         CISA pages are Drupal-built with multiple plausible content containers
         across redesigns. Try several selectors in order of specificity.
+
+        ATT&CK tables are decomposed here (see ``_strip_attack_tables``) because
+        they are captured separately as ``cisa_attack_table`` mentions. This
+        method must run AFTER ``_extract_attack_table_mentions``, since it
+        mutates the shared soup.
         """
         candidates = [
             ("div", {"class": "l-page-section--alerts"}),
@@ -224,21 +233,39 @@ class CisaAdvisoriesIngester(BaseIngester):
                 # Remove obvious noise within the chosen container.
                 for noise in node.select("nav, footer, .c-skip-nav, .visually-hidden"):
                     noise.decompose()
+                self._strip_attack_tables(node)
                 return self._normalize_whitespace(node.get_text(separator=" "))
 
         # Fall back to whole page text minus head/script/style.
         for noise in soup.select("script, style, nav, footer"):
             noise.decompose()
+        self._strip_attack_tables(soup)
         return self._normalize_whitespace(soup.get_text(separator=" "))
 
     @staticmethod
     def _normalize_whitespace(text_in: str) -> str:
         return re.sub(r"\s+", " ", text_in or "").strip()
 
+    @staticmethod
+    def _strip_attack_tables(scope: Tag) -> None:
+        """Decompose ATT&CK technique tables from ``scope`` in place.
+
+        These tables are captured separately as ``cisa_attack_table`` mentions.
+        Removing them from the body prose keeps the regex extraction pass
+        independent of the table pass: a technique reported by both methods
+        genuinely appears in CISA's structured table *and* in the advisory
+        narrative, rather than the regex pass merely re-reading the same table.
+
+        Uses the same ``_table_looks_like_attack`` heuristic the table
+        extractor uses, so exactly the tables consumed there are removed here.
+        """
+        for table in scope.find_all("table"):
+            if CisaAdvisoriesIngester._table_looks_like_attack(table):
+                table.decompose()
+
     def _extract_attack_table_mentions(
         self,
         soup: BeautifulSoup,
-        body_text: str,
     ) -> list[AttackTableMention]:
         """Find ATT&CK technique IDs in any table the page contains.
 

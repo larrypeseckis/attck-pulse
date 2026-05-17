@@ -153,6 +153,27 @@ class TestParseAdvisoryWithAttackTables:
         assert "Play" in report.extracted_text
         assert "ransomware" in report.extracted_text.lower()
 
+    def test_attack_tables_excluded_from_body_text(self, ingester, html):
+        """ATT&CK tables are captured separately as cisa_attack_table mentions;
+        their text must not leak into extracted_text.
+
+        Otherwise the base regex extractor re-finds table-only techniques as
+        spurious 'regex' mentions, and 'regex' would stop meaning 'appeared in
+        prose'. Techniques genuinely cited in prose must still survive.
+        """
+        report = ingester._parse_advisory(
+            url="https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-352a",
+            rss_title="t", rss_published="", rss_summary="", html=html,
+        )
+        # T1078 is cited in prose ("valid accounts (T1078)") — it stays.
+        assert "T1078" in report.extracted_text
+        # These appear only inside ATT&CK tables — gone from the prose body.
+        for table_only in ["T1595", "T1590", "T1190", "T1133", "T1486"]:
+            assert table_only not in report.extracted_text
+        # ...but the table extractor still captured every one of them.
+        table_ids = {m.technique_id for m in report.attack_table_mentions}
+        assert {"T1595", "T1590", "T1190", "T1133", "T1486"}.issubset(table_ids)
+
 
 class TestParseAdvisoryWithoutTables:
     """Tests against the inline-only fixture: T-numbers in prose, no ATT&CK table."""
