@@ -12,6 +12,7 @@ import argparse
 import sys
 
 from threat_intel.ingesters.base import BaseIngester
+from threat_intel.ingesters.cisa_advisories import CisaAdvisoriesIngester
 from threat_intel.ingesters.cisa_kev import CisaKevIngester
 from threat_intel.logging_setup import configure_logging, get_logger
 
@@ -19,7 +20,8 @@ from threat_intel.logging_setup import configure_logging, get_logger
 # Registry of available ingesters
 INGESTERS: dict[str, type[BaseIngester]] = {
     "cisa_kev": CisaKevIngester,
-    # Future: cisa_advisories, microsoft_security_blog, dfir_report
+    "cisa_advisories": CisaAdvisoriesIngester,
+    # Future: microsoft_security_blog, dfir_report
 }
 
 

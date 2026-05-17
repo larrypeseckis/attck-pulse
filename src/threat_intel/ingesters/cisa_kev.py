@@ -18,9 +18,8 @@ Why include it anyway in v1:
 
 from __future__ import annotations
 
-from collections.abc import Iterator
-from datetime import UTC, datetime
-from typing import Any
+from datetime import datetime, timezone
+from typing import Any, Iterator
 
 import yaml
 from dateutil import parser as dateparser
@@ -28,6 +27,7 @@ from dateutil import parser as dateparser
 from threat_intel.config import settings
 from threat_intel.ingesters.base import BaseIngester, NormalizedReport
 from threat_intel.logging_setup import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -137,6 +137,7 @@ class CisaKevIngester(BaseIngester):
             published_at=published_at,
             raw_html=None,  # KEV is JSON, no HTML to preserve
             extracted_text=extracted_text,
+            report_type="cisa_kev",
             source_metadata=metadata,
         )
 
@@ -148,7 +149,7 @@ def _parse_date(value: str | None) -> datetime | None:
     try:
         parsed = dateparser.parse(value)
         if parsed.tzinfo is None:
-            parsed = parsed.replace(tzinfo=UTC)
+            parsed = parsed.replace(tzinfo=timezone.utc)
         return parsed
     except (ValueError, TypeError):
         logger.warning("Could not parse date: %r", value)
