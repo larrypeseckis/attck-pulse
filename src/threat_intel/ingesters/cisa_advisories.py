@@ -25,8 +25,9 @@ Operational notes:
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
-from typing import Any, Iterator
+from collections.abc import Iterator
+from datetime import UTC, datetime
+from typing import Any
 from urllib.parse import urljoin
 
 import feedparser
@@ -42,7 +43,6 @@ from threat_intel.ingesters.base import (
     NormalizedReport,
 )
 from threat_intel.logging_setup import get_logger
-
 
 logger = get_logger(__name__)
 
@@ -367,7 +367,7 @@ class CisaAdvisoriesIngester(BaseIngester):
         try:
             parsed = dateparser.parse(value)
             if parsed and parsed.tzinfo is None:
-                parsed = parsed.replace(tzinfo=timezone.utc)
+                parsed = parsed.replace(tzinfo=UTC)
             return parsed
         except (ValueError, TypeError):
             logger.warning("Could not parse date: %r", value)

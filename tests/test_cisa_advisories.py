@@ -12,11 +12,9 @@ from pathlib import Path
 import pytest
 
 from threat_intel.ingesters.cisa_advisories import (
-    AA_ID_PATTERN,
     AA_PATH_PATTERN,
     CisaAdvisoriesIngester,
 )
-
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
 

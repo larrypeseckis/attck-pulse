@@ -10,9 +10,10 @@ from __future__ import annotations
 import json
 import time
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Iterator
+from typing import Any
 
 import httpx
 from sqlalchemy import text
@@ -32,7 +33,6 @@ from threat_intel.extractors.regex_extractor import (
 )
 from threat_intel.logging_setup import get_logger
 
-
 logger = get_logger(__name__)
 
 
@@ -48,9 +48,8 @@ def _is_transient_http_error(exc: BaseException) -> bool:
     """
     if isinstance(exc, httpx.HTTPStatusError):
         return exc.response.status_code not in PERMANENT_HTTP_ERRORS
-    if isinstance(exc, httpx.HTTPError):
-        return True  # Network/timeout/etc.
-    return False
+    # Any other httpx error (network/timeout/etc.) is transient and retryable.
+    return isinstance(exc, httpx.HTTPError)
 
 
 @dataclass
@@ -119,7 +118,7 @@ class BaseIngester(ABC):
 
     # Lifecycle
 
-    def __enter__(self) -> "BaseIngester":
+    def __enter__(self) -> BaseIngester:
         self._client = httpx.Client(
             headers={"User-Agent": settings.http_user_agent},
             timeout=settings.http_timeout_seconds,
