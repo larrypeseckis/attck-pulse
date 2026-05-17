@@ -15,7 +15,7 @@ from __future__ import annotations
 import argparse
 import csv
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from sqlalchemy import text
@@ -103,7 +103,7 @@ def main() -> int:
     logger.info("Sampled %d mentions for review", len(mentions))
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    timestamp = datetime.now(tz=UTC).strftime("%Y%m%dT%H%M%SZ")
     csv_file = args.output_dir / f"validation_{args.method}_{timestamp}.csv"
 
     results: list[dict] = []

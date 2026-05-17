@@ -75,6 +75,25 @@ Not all sources produce mentions at the same rate. The dataset includes structur
 
 The two extraction methods are stored separately so analytical queries can choose their precision tier. A query like "techniques present in CISA-curated tables" uses the table-extracted mentions only; a query like "all technique references regardless of how they were extracted" uses both.
 
+**The DFIR Report: structured ATT&CK code blocks, when served statically.** Most public DFIR reports end with a `## MITRE ATT&CK` section rendered as a code block of `Technique Name - T####` lines. The ingester parses this block with `extraction_method = 'dfir_attack_block'` and confidence 1.0, then strips the block from `extracted_text` before storage. This avoids the same double-counting bug class that affected the CISA ingester before its `_strip_attack_tables` fix: leaving the structured block in body text causes the regex extractor to read its contents and label them as `regex` mentions, falsely inflating cross-method agreement. Other DFIR report sections (Detections, Indicators, Diamond Model, tactical narrative) are preserved in `extracted_text` because they contain useful inline T-number references and the regex extractor's word-boundary anchoring protects against false positives from hashes, UUIDs, and Sigma rule IDs.
+
+DFIR reports come in two subtypes: full-length intrusion case studies (`report_type = 'dfir_full_report'`) and Flash Alerts (`report_type = 'dfir_flash_alert'`). Subtype is detected from title prefix.
+
+Not every report exposes the ATT&CK block to a static fetch. In a recent 10-report sample only 5 served the section in their HTML; the rest appear to render it client-side, and a static-fetch ingester yields zero structured mentions for those. This is a source limitation, not a parser one — recovering them would require a JavaScript-rendering fetch, out of scope for v1. Recent posts also wrap the ATT&CK heading in a table-of-contents container, so the block is located by a document-order walk rather than a DOM-sibling walk.
+
+## Validation results
+
+Manual precision validation conducted on sampled mentions from each extraction method. Wilson 95% confidence intervals reported because point-estimate "100%" understates uncertainty at finite sample sizes.
+
+| Method | Sample size | True positives | Point precision | Wilson 95% CI lower bound |
+|---|---|---|---|---|
+| regex (post body-text-leak fix) | 50 | 50 | 100% | 92.9% |
+| cisa_attack_table | 30 | 30 | 100% | 88.6% |
+
+Both methods meet or exceed the targets stated in the extraction approach section. Honest framing: results so far have produced zero observed false positives, but the lower confidence bound reflects the sample size. Larger samples will tighten the intervals.
+
+Validation samples are stored in `validation/` (excluded from git) with one CSV per run capturing verdicts and notes.
+
 ## Why these choices
 
 The two-stage approach (regex + spaCy) is a deliberate precision/recall tradeoff. A pure-regex pipeline misses most mentions. A pure-NLP pipeline introduces too much noise. Stratifying by extraction method in the database lets downstream queries choose their own precision/recall point.

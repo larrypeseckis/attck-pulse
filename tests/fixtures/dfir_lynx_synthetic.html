@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cat's Got Your Files: Lynx Ransomware - The DFIR Report</title>
+</head>
+<body>
+<header>
+    <nav><a href="/">Home</a> <a href="/reports/">Reports</a></nav>
+</header>
+<main>
+<article>
+    <h1>Cat's Got Your Files: Lynx Ransomware</h1>
+    <div class="entry-content">
+        <h2>Key Takeaways</h2>
+        <ul>
+            <li>The intrusion began with a successful RDP login using already-compromised credentials.</li>
+            <li>The threat actor moved laterally to a domain controller via RDP using a separate compromised domain admin account.</li>
+            <li>Sensitive files from multiple network shares were collected, compressed using 7-Zip, and exfiltrated via temp.sh.</li>
+            <li>The threat actor deployed Lynx ransomware across multiple backup and file servers via RDP.</li>
+        </ul>
+
+        <h2>Case Summary</h2>
+        <p>The intrusion began in early March 2025 with a single successful Remote Desktop Protocol (RDP) logon to an internet-exposed system. The threat actor authenticated using valid credentials and immediately began reconnaissance using cmd.exe and standard Windows utilities.</p>
+
+        <p>The actor used T1078 Valid Accounts for initial access and pivoted via T1021.001 Remote Desktop Protocol for lateral movement.</p>
+
+        <h2>Initial Access</h2>
+        <p>The first instance of unauthorized access was a successful RDP logon to the beachhead host using valid credentials. No evidence of brute force or password spraying was observed.</p>
+
+        <h2>Execution</h2>
+        <p>The threat actor used Windows Command Shell (cmd.exe) and PowerShell to execute commands during hands-on-keyboard activity. These tools were primarily used to run Living Off The Land Binaries (LOLBins).</p>
+
+        <h2>Persistence</h2>
+        <p>The threat actor created three look-alike domain accounts using dsa.msc and added them to privileged security groups. AnyDesk was also installed as a service on the domain controller.</p>
+
+        <h2>Discovery</h2>
+        <p>The threat actor performed extensive network and system discovery using SoftPerfect NetScan, ipconfig, route print, systeminfo, and the registry query reg query HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Virtual Machine\\Guest\\Parameters.</p>
+
+        <h2>Lateral Movement</h2>
+        <p>The threat actor used RDP extensively for lateral movement, connecting to domain controllers, hypervisors, and backup servers.</p>
+
+        <h2>Collection</h2>
+        <p>The threat actor collected several folders from multiple file servers, archiving them with 7-Zip via the explorer.exe context menu.</p>
+
+        <h2>Command and Control</h2>
+        <p>All activity was performed via RDP from IP addresses 195.211.190.189 and 77.90.153.30, both hosted on Railnet LLC infrastructure (a known bulletproof hosting front).</p>
+
+        <h2>Exfiltration</h2>
+        <p>The threat actor used temp.sh to exfiltrate compressed archives via web upload.</p>
+
+        <h2>Impact</h2>
+        <p>The threat actor deployed Lynx ransomware (w.exe) on multiple backup and file servers, executed with arguments --dir E:\\ --mode fast --verbose --noprint. The actor also removed backup jobs from the Veeam configuration database to inhibit recovery.</p>
+
+        <h2>Diamond Model</h2>
+        <p><a href="https://thedfirreport.com/dfir-image-report-34936_059/"><img src="diamond.png" alt="Diamond Model"></a></p>
+
+        <h2>Indicators</h2>
+        <p>Atomic</p>
+        <pre>RDP Initial Access:
+195.211.190.189
+
+RDP Follow Up Activity:
+77.90.153.30</pre>
+
+        <h2>Computed</h2>
+        <pre>File: netscan.exe
+3073af95dfc18361caebccd69d0021a2
+efe8b9ff7ff93780c9162959a4c1e5ecf6e840a4
+517288e12c05a92e483e6d80b9136c19bc58c46851720680bb6d1b7016034c37
+
+File: nxc.exe
+7532ff90145b8c59dc9440bf43dc87a5
+2b4b11d3ecffd82ed44db652cdd65733224f8e34
+6285d32a9491a0084da85a384a11e15e203badf67b1deed54155f02b7338b108
+
+File: w.exe
+e2179046b86deca297ebf7398b95e438
+3e01df0155a539fe6d802ee9e9226d8c77fd96c9
+07b36c1660deb223749a8ac151676d8924bc13aa59e6712a3c14a2df5237264a</pre>
+
+        <h2>Detections</h2>
+        <p>Network</p>
+        <pre>ET DROP Spamhaus DROP Listed Traffic Inbound group 7
+ET DROP Spamhaus DROP Listed Traffic Inbound group 37
+ET SCAN Behavioral Unusual Port 135 traffic Potential Scan or Infection</pre>
+
+        <p>Sigma DFIR Rules:</p>
+        <pre>8a0d153f-b4e4-4ea7-9335-892dfbe17221 : NetScan Share Enumeration Write Access Check
+53ad7638-3862-49a2-9ddd-af7132f9e598 : Using Netscan for Post-Scanning Lateral Movement
+b26feb0b-8891-4e66-b2e7-ec91dc045d58 : AnyDesk Network
+d7838d77-3a28-45cd-bc0e-7b941b687a39 : HyperVisor Discovery Activity</pre>
+
+        <p>Yara</p>
+        <pre>MAL_RANSOM_INC_Aug24</pre>
+
+        <h2>MITRE ATT&amp;CK</h2>
+        <pre>Additional Local or Domain Groups - T1098.007
+Archive via Utility - T1560.001
+Data Encrypted for Impact - T1486
+Domain Account - T1136.002
+Exfiltration Over Web Service - T1567
+External Remote Services - T1133
+Inhibit System Recovery - T1490
+Local Account - T1087.001
+Network Service Discovery - T1046
+Network Share Discovery - T1135
+PowerShell - T1059.001
+Query Registry - T1012
+Remote Access Software - T1219
+Remote Desktop Protocol - T1021.001
+Remote System Discovery - T1018
+System Information Discovery - T1082
+System Network Configuration Discovery - T1016
+Valid Accounts - T1078
+Windows Command Shell - T1059.003
+Windows Service - T1543.003</pre>
+    </div>
+</article>
+</main>
+<footer><p>© The DFIR Report</p></footer>
+</body>
+</html>

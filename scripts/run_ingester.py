@@ -4,6 +4,7 @@
 Usage:
     python scripts/run_ingester.py cisa_kev
     python scripts/run_ingester.py cisa_advisories
+    python scripts/run_ingester.py dfir_report
 """
 
 from __future__ import annotations
@@ -14,14 +15,14 @@ import sys
 from threat_intel.ingesters.base import BaseIngester
 from threat_intel.ingesters.cisa_advisories import CisaAdvisoriesIngester
 from threat_intel.ingesters.cisa_kev import CisaKevIngester
+from threat_intel.ingesters.dfir_report import DfirReportIngester
 from threat_intel.logging_setup import configure_logging, get_logger
-
 
 # Registry of available ingesters
 INGESTERS: dict[str, type[BaseIngester]] = {
     "cisa_kev": CisaKevIngester,
     "cisa_advisories": CisaAdvisoriesIngester,
-    # Future: microsoft_security_blog, dfir_report
+    "dfir_report": DfirReportIngester,
 }
 
 
