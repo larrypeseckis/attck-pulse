@@ -42,6 +42,9 @@ data/attack/
 *.sqlite
 *.db
 
+# Validation run outputs (CSV verdicts from validate_extraction.py)
+validation/
+
 # Jupyter
 .ipynb_checkpoints/
 notebooks/*.ipynb

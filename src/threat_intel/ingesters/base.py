@@ -104,6 +104,10 @@ class BaseIngester(ABC):
     # pages from the same origin should set this to a positive value.
     inter_request_delay_seconds: float = 0.0
 
+    # extraction_method label for mentions from this source's structured ATT&CK
+    # section (table, code block, etc.). Overridden per source.
+    attack_mention_method: str = "cisa_attack_table"
+
     def __init__(self):
         self._client: httpx.Client | None = None
         self._source_id: int | None = None
@@ -326,7 +330,7 @@ class BaseIngester(ABC):
                     )
                     VALUES (
                         :report_id, :technique_id, :snippet,
-                        'cisa_attack_table', :confidence
+                        :method, :confidence
                     )
                     ON CONFLICT (report_id, technique_id, extraction_method)
                     DO NOTHING
@@ -337,6 +341,7 @@ class BaseIngester(ABC):
                     "report_id": report_id,
                     "technique_id": mention.technique_id,
                     "snippet": mention.context_snippet,
+                    "method": self.attack_mention_method,
                     "confidence": mention.confidence,
                 },
             )

@@ -14,11 +14,11 @@ import sys
 from threat_intel.db import run_migration
 from threat_intel.logging_setup import configure_logging, get_logger
 
-
 MIGRATIONS = [
     "001_initial_schema.sql",
     "002_pipeline_runs.sql",
     "003_advisory_support.sql",
+    "004_dfir_support.sql",
 ]
 
 
