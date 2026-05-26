@@ -48,7 +48,6 @@ validation/
 # Jupyter
 .ipynb_checkpoints/
 notebooks/*.ipynb
-notebooks/figures/
 !notebooks/.gitkeep
 
 # Test artifacts

@@ -504,3 +504,5 @@ print("Chart-to-post mapping:")
 print("  post2_cross_source_top15.png       -> Post 2 (cross-source attestation)")
 print("  post3_tactic_distribution.png      -> Post 3 (frequency)")
 print("  post3_per_report_yield.png         -> Post 3 (bimodal DFIR finding)")
+
+# %%
